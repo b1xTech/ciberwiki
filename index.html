@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>0xWIKI | The Comprehensive Hacker's Handbook</title>
     
-    <!-- FAVICON -->
+    
     <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230b0c0f"/><text x="50" y="65" font-family="monospace" font-weight="bold" font-size="60" text-anchor="middle" fill="%2358a6ff">0x</text></svg>'>
     <meta name="theme-color" content="#0d1117">
 
-    <!-- FUENTES -->
+    
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
-    <!-- CONEXIÓN CON TU CSS -->
+   
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -44,7 +44,7 @@
 <main>
     <div class="content">
 
-        <!-- ======================= WEB: XSS ======================= -->
+       
         <div id="web-xss" class="page visible">
             <div class="module-badge">MODULE: WEB // CLIENT_SIDE</div>
             <h1>Cross-Site Scripting (XSS)</h1>
@@ -75,7 +75,7 @@ document.write("Results for: " + search);</code></pre>
             </ul>
         </div>
 
-        <!-- ======================= WEB: SQLi ======================= -->
+        
         <div id="web-sqli" class="page">
             <div class="module-badge">MODULE: WEB // SEVERITY: CRITICAL</div>
             <h1>SQL Injection (SQLi) Master Reference</h1>
@@ -127,7 +127,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             </div>
         </div>
 
-        <!-- ======================= WEB: XXE ======================= -->
+       
         <div id="web-xxe" class="page">
             <div class="module-badge">MODULE: WEB // XML_PARSER</div>
             <h1>XML External Entity (XXE)</h1>
@@ -137,7 +137,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
 &lt;foo&gt;&xxe;&lt;/foo&gt;</code></pre>
         </div>
 
-        <!-- ======================= WEB: CSRF/SSRF ======================= -->
+       
         <div id="web-csrf" class="page">
             <div class="module-badge">MODULE: WEB // FORGERY</div>
             <h1>CSRF vs SSRF</h1>
@@ -148,7 +148,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             <p>Forces the <strong>Server</strong> to send a request to internal networks or cloud metadata.</p>
         </div>
 
-        <!-- ======================= WEB: DESERIALIZATION ======================= -->
+        
         <div id="web-deserial" class="page">
             <div class="module-badge">MODULE: WEB // LOGIC</div>
             <h1>Insecure Deserialization</h1>
@@ -156,7 +156,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             <p><strong>Tools:</strong> <code>ysoserial</code> (Java) and <code>PHPGGC</code> (PHP).</p>
         </div>
 
-        <!-- ======================= RT: RECON ======================= -->
+       
         <div id="rt-recon" class="page">
             <div class="module-badge">MODULE: RED_TEAM // PHASE_1</div>
             <h1>Reconnaissance: Nmap</h1>
@@ -171,7 +171,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             </table>
         </div>
 
-        <!-- ======================= RT: BUFFER ======================= -->
+        
         <div id="rt-buffer" class="page">
             <div class="module-badge">MODULE: RED_TEAM // BINARY</div>
             <h1>Buffer Overflows</h1>
@@ -188,7 +188,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             </div>
         </div>
 
-        <!-- ======================= RT: AD ======================= -->
+       
         <div id="rt-ad" class="page">
             <div class="module-badge">MODULE: RED_TEAM // WINDOWS</div>
             <h1>Active Directory (AD)</h1>
@@ -197,7 +197,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             <p><strong>Golden Ticket:</strong> Forging TGTs using the <code>krbtgt</code> hash for persistence.</p>
         </div>
 
-        <!-- ======================= RT: LATERAL ======================= -->
+       
         <div id="rt-lateral" class="page">
             <div class="module-badge">MODULE: RED_TEAM // MOVEMENT</div>
             <h1>Lateral Movement</h1>
@@ -206,7 +206,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             <p><strong>WinRM:</strong> PowerShell Remoting. Uses HTTP/HTTPS.</p>
         </div>
 
-        <!-- ======================= RT: C2 ======================= -->
+        
         <div id="rt-c2" class="page">
             <div class="module-badge">MODULE: RED_TEAM // INFRA</div>
             <h1>C2 & Exfiltration</h1>
@@ -214,7 +214,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             <p><strong>Domain Fronting:</strong> Hiding traffic behind high-reputation CDNs.</p>
         </div>
 
-        <!-- ======================= OS: MEMORY ======================= -->
+       
         <div id="os-mem" class="page">
             <div class="module-badge">MODULE: KERNEL // RAM</div>
             <h1>OS Memory Layout</h1>
@@ -224,7 +224,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             <p><strong>Stack:</strong> Local variables (grows down).</p>
         </div>
 
-        <!-- ======================= OS: WINDOWS ======================= -->
+       
         <div id="os-win" class="page">
             <div class="module-badge">MODULE: KERNEL // STRUCTURES</div>
             <h1>Windows Internals</h1>
@@ -232,7 +232,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             <p><strong>TEB:</strong> Thread Environment Block. Points to SEH chain.</p>
         </div>
 
-        <!-- ======================= OS: RINGS ======================= -->
+       
         <div id="os-ring" class="page">
             <div class="module-badge">MODULE: KERNEL // CPU</div>
             <h1>Rings & Syscalls</h1>
@@ -240,7 +240,7 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
             <p><strong>Syscall:</strong> The instruction that transitions CPU from Ring 3 to Ring 0.</p>
         </div>
 
-        <!-- ======================= OS: DRIVERS ======================= -->
+        
         <div id="os-drivers" class="page">
             <div class="module-badge">MODULE: KERNEL // RING_0</div>
             <h1>Kernel Drivers</h1>
@@ -251,8 +251,9 @@ sqlmap -u "http://target.com" --os-shell</code></pre>
     </div>
 </main>
 
-<!-- CONEXIÓN CON TU JS -->
+
 <script src="script.js"></script>
 
 </body>
+
 </html>
